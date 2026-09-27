@@ -1,9 +1,9 @@
-# Built for Mars UX Contract System & MCP Server 🚀
+# UX Contract System & MCP Server (`ux-contract-mcp`) 🚀
 
 > **Deterministic UX Quality Gates, Behavioral Psychology Laws, and Model Context Protocol (MCP) Server for AI-Driven Product Engineering.**
 
 [![MCP Server](https://img.shields.io/badge/MCP-Server-indigo?style=for-the-badge&logo=modelcontextprotocol)](https://modelcontextprotocol.io)
-[![Built for Mars](https://img.shields.io/badge/Built--for--Mars-UX--Research-orange?style=for-the-badge)](https://builtformars.com)
+[![UX Contract](https://img.shields.io/badge/UX--Contract-v1.1.0-blue?style=for-the-badge)](https://github.com/originsatyam/ux-contract-mcp)
 [![WCAG AAA](https://img.shields.io/badge/WCAG-AAA-emerald?style=for-the-badge)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
@@ -11,16 +11,16 @@
 
 ## 📌 Executive Overview
 
-The **Built for Mars UX Contract System** codifies real-world behavioral psychology research, micro-interaction heuristics, and teardowns from 1,400+ UX audits (including Wispr Flow, Dia Browser, Spotify, ClearSpace, Flo, and Uber One) into **deterministic quality gates** and an **open-source Model Context Protocol (MCP) Server**.
+The **UX Contract System (`ux-contract-mcp`)** codifies world-class behavioral psychology research, micro-interaction heuristics, and real-world teardowns into **deterministic quality gates** and an **open-source Model Context Protocol (MCP) Server**.
 
-Designed for **Principal Product Designers**, **Lead Frontend Engineers**, and **Autonomous AI Agents** (Cursor, Windsurf, Claude Desktop, Antigravity), this repository guarantees zero design drift, sub-100ms micro-feedback loops, and ethical symmetrical user experiences.
+Designed for **Principal Product Designers**, **Lead Frontend Engineers**, and **Autonomous AI Agents** (Cursor, Windsurf, Claude Desktop, Antigravity), this repository guarantees zero design drift, sub-100ms micro-feedback loops, WCAG AAA accessibility, and ethical symmetrical user experiences.
 
 ---
 
 ## 🌟 Key Features
 
 - 🧠 **Behavioral Psychology Laws**: Integrated Peak-End Rule, Hick-Hyman Law, Progressive Disclosure, and Loss Aversion item swapping.
-- ⚡ **Built for Mars MCP Server (`ux-contract-mcp`)**: Native Model Context Protocol server exposing `audit_ux_contract`, `get_builtformars_heuristics`, and `get_contract_rules` tools to any AI assistant.
+- ⚡ **Native MCP Server (`ux-contract-mcp`)**: Model Context Protocol server exposing `audit_ux_contract`, `get_ux_heuristics`, and `get_contract_rules` tools to any AI assistant.
 - 🛡️ **Executable UX Contracts**: Formal rules (`UX-01` through `UX-07`, Rules 1–34) covering zero-reflow inputs, single clean focus boundaries, custom listbox popovers, and secret visibility agency.
 - 🎯 **Agent Skill Integration**: Direct compatibility with `.agents/skills/ux-audit/SKILL.md` for zero-configuration AI agent discovery.
 
@@ -35,11 +35,11 @@ Connect this system directly to your AI editor (**Cursor**, **Windsurf**, **Clau
 ```json
 {
   "mcpServers": {
-    "builtformars-ux-contract": {
+    "ux-contract": {
       "command": "npx",
       "args": [
         "-y",
-        "github:originsatyam/builtformars-ux-contract-mcp"
+        "github:originsatyam/ux-contract-mcp"
       ]
     }
   }
@@ -51,7 +51,7 @@ Connect this system directly to your AI editor (**Cursor**, **Windsurf**, **Clau
 | Tool Name | Parameters | Description |
 | :--- | :--- | :--- |
 | `audit_ux_contract` | `code`, `component_type` | Audits HTML/CSS/JS markup against all 34 UX contract rules and returns compliance score, severity, and remediation code. |
-| `get_builtformars_heuristics` | *None* | Retrieves core Built for Mars behavioral laws (progressive disclosure, TTFV, peak-end rule, optimistic UI, loss aversion). |
+| `get_ux_heuristics` | *None* | Retrieves core behavioral psychology laws (progressive disclosure, TTFV, peak-end rule, optimistic UI, loss aversion). |
 | `get_contract_rules` | `category` | Retrieves compiled deterministic design contracts and quality gate rules. |
 
 ---
@@ -99,7 +99,7 @@ graph TD
 │   ├── overlays.md             # Modal & Drawer Architecture Rules
 │   └── ux.md                   # Dedicated UX & Behavioral Contract (UX-01 - UX-07)
 ├── design-skills/
-│   ├── ux-skills.md            # Built for Mars Design Skills Guide
+│   ├── ux-skills.md            # UX & Behavioral Psychology Guide
 │   ├── web-skills.md           # Core Web Design Token Guide
 │   ├── shadcn-skills.md        # Shadcn Design System Tokens
 │   └── carbon-skills.md        # IBM Carbon Design Tokens
@@ -113,8 +113,7 @@ graph TD
 
 ---
 
-## 👤 Author & Attribution
+## 👤 Author & License
 
 - **Creator**: [originsatyam](https://github.com/originsatyam)
-- **Research Attribution**: Inspired by and derived from [Built for Mars](https://builtformars.com) UX Teardowns and Micro-Interaction Case Studies.
 - **License**: MIT

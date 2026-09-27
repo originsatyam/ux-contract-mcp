@@ -7,39 +7,39 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
-const BUILTFORMARS_LAWS = [
+const BEHAVIORAL_UX_LAWS = [
   {
-    id: 'BFM-01',
+    id: 'UX-LAW-01',
     name: 'Progressive Disclosure & Choice Calibration',
     rule: 'Never expose >7 primary options simultaneously. Group complex controls under contextual disclosure drawers or collapsible panels.',
     examples: 'Dia Browser & Spotify dynamically preview configuration changes directly inside interactive mockups before committing.'
   },
   {
-    id: 'BFM-02',
+    id: 'UX-LAW-02',
     name: 'Time-To-First-Value (TTFV) & Contextual Onboarding',
     rule: 'Demonstrate value before demanding user setup or authentication. Minimize modal barriers before core interaction.',
     examples: 'Wispr Flow & Atoms skip upfront sign-up and demonstrate features in the user\'s exact chosen context.'
   },
   {
-    id: 'BFM-03',
+    id: 'UX-LAW-03',
     name: 'Peak-End Rule & Celebration Calibration',
     rule: 'Reserve celebratory animations (confetti, badges, haptics) strictly for major milestones. Auto-hide onboarding tooltips upon action.',
     examples: 'Spoil Me auto-hides tooltips on user interaction to save unnecessary clicks.'
   },
   {
-    id: 'BFM-04',
+    id: 'UX-LAW-04',
     name: 'Optimistic UI & Perception Management',
     rule: 'Acknowledge visual feedback in under 100ms. Perform local optimistic state updates immediately; revert gracefully on failure.',
     examples: 'Linear & Stripe instant state transformations.'
   },
   {
-    id: 'BFM-05',
+    id: 'UX-LAW-05',
     name: 'Form Ergonomics & Inline Auto-Correction',
     rule: 'Validate fields on blur or 500ms debounce. Render inline error text with single-click auto-fix suggestions.',
     examples: 'Single-click domain auto-correct ("Did you mean .com?").'
   },
   {
-    id: 'BFM-06',
+    id: 'UX-LAW-06',
     name: 'Ethical Symmetrical UX & Loss Aversion',
     rule: 'Reversing an action (canceling, unsubscribing, resetting) must require no more steps than initiating it. Offer item-swapping on freemium boundaries.',
     examples: 'ClearSpace allows option swapping on freemium limits; Uber One presents transparent monthly savings breakdown at cancel.'
@@ -64,7 +64,7 @@ const CONTRACT_RULES = [
 
 const server = new Server(
   {
-    name: 'builtformars-ux-contract-mcp',
+    name: 'ux-contract-mcp',
     version: '1.0.0',
   },
   {
@@ -79,7 +79,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     tools: [
       {
         name: 'audit_ux_contract',
-        description: 'Audit an HTML, CSS, or JS code snippet against Built for Mars UX behavioral laws and deterministic contract rules (Rules 1-34, UX-01 to UX-07). Returns pass/fail metrics, rule violations, and remediation guidance.',
+        description: 'Audit an HTML, CSS, or JS code snippet against comprehensive behavioral UX laws and deterministic design system contract rules (Rules 1-34, UX-01 to UX-07). Returns pass/fail metrics, rule violations, and remediation guidance.',
         inputSchema: {
           type: 'object',
           properties: {
@@ -96,8 +96,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         }
       },
       {
-        name: 'get_builtformars_heuristics',
-        description: 'Retrieve Built for Mars core behavioral psychology laws, friction reduction rules, and real-world teardown examples (Wispr Flow, Dia, Spotify, ClearSpace, Uber One).',
+        name: 'get_ux_heuristics',
+        description: 'Retrieve behavioral psychology laws, friction reduction rules, micro-interaction heuristics, and real-world teardowns.',
         inputSchema: {
           type: 'object',
           properties: {}
@@ -123,15 +123,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
-  if (name === 'get_builtformars_heuristics') {
+  if (name === 'get_ux_heuristics') {
     return {
       content: [
         {
           type: 'text',
           text: JSON.stringify({
-            title: 'Built for Mars Behavioral UX Heuristics',
-            source: 'Built for Mars UX Teardowns & Micro-Interaction Research',
-            laws: BUILTFORMARS_LAWS
+            title: 'Behavioral UX & Micro-Interaction Heuristics',
+            source: 'Behavioral Psychology & Micro-Interaction Research',
+            laws: BEHAVIORAL_UX_LAWS
           }, null, 2)
         }
       ]
@@ -247,7 +247,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function run() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('Built for Mars UX Contract MCP Server running on stdio');
+  console.error('UX Contract MCP Server running on stdio');
 }
 
 run().catch((err) => {

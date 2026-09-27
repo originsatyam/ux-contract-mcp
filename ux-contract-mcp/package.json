@@ -1,10 +1,10 @@
 {
-  "name": "builtformars-ux-contract-mcp",
+  "name": "ux-contract-mcp",
   "version": "1.0.0",
-  "description": "Model Context Protocol (MCP) server for Built for Mars UX audit heuristics, behavioral psychology laws, and deterministic contract quality gates.",
+  "description": "Model Context Protocol (MCP) server for UX audit heuristics, behavioral psychology laws, design systems, and deterministic quality gates.",
   "main": "index.js",
   "bin": {
-    "builtformars-ux-contract-mcp": "index.js"
+    "ux-contract-mcp": "index.js"
   },
   "type": "module",
   "scripts": {
@@ -12,11 +12,11 @@
   },
   "keywords": [
     "mcp",
-    "builtformars",
+    "ux-contract",
     "ux-audit",
     "behavioral-psychology",
     "design-system",
-    "contract-audit",
+    "quality-gates",
     "model-context-protocol"
   ],
   "author": "originsatyam",
