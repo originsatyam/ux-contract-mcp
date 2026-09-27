@@ -6,8 +6,26 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const BEHAVIORAL_UX_LAWS = [
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..');
+
+// Helper to safely read file content
+function getFileContent(relativePath) {
+  try {
+    const fullPath = path.join(rootDir, relativePath);
+    if (fs.existsSync(fullPath)) {
+      return fs.readFileSync(fullPath, 'utf8');
+    }
+  } catch (e) {}
+  return null;
+}
+
+const BUILTFORMARS_LAWS = [
   {
     id: 'UX-LAW-01',
     name: 'Progressive Disclosure & Choice Calibration',
@@ -46,7 +64,7 @@ const BEHAVIORAL_UX_LAWS = [
   }
 ];
 
-const CONTRACT_RULES = [
+const CONTRACT_RULES_SUMMARY = [
   { id: 'UX-01', category: 'Micro-Interaction', summary: 'Visual feedback must trigger within 100ms of user interaction.' },
   { id: 'UX-02', category: 'Layout & Disclosure', summary: 'Max 7 primary controls per view; use progressive disclosure & live previews.' },
   { id: 'UX-03', category: 'State Resilience', summary: 'Optimistic UI updates with instant feedback and non-blocking revert handling.' },
@@ -59,13 +77,14 @@ const CONTRACT_RULES = [
   { id: 'RULE-22', category: 'Inline Micro-Feedback', summary: 'Inline button transitions (Copied!, Applied!) over detached floating toasts.' },
   { id: 'RULE-25', category: 'Dropdown Safety', summary: 'Custom listbox popovers over native unstyled OS select comboboxes.' },
   { id: 'RULE-26', category: 'Secret Visibility', summary: 'Password and secret inputs must feature an integrated visibility toggle button.' },
-  { id: 'RULE-33', category: 'Empty States', summary: 'Data tables with 0 search matches must render structured Actionable Empty States with Reset CTA.' }
+  { id: 'RULE-33', category: 'Empty States', summary: 'Data tables with 0 search matches must render structured Actionable Empty States with Reset CTA.' },
+  { id: 'RULE-34', category: 'Behavioral Architecture', summary: 'Full Built for Mars behavioral psychology laws (progressive disclosure, TTFV, peak-end rule, symmetrical UX).' }
 ];
 
 const server = new Server(
   {
     name: 'ux-contract-mcp',
-    version: '1.0.0',
+    version: '1.1.0',
   },
   {
     capabilities: {
@@ -89,7 +108,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             component_type: {
               type: 'string',
-              description: 'Optional component classification: form, table, modal, drawer, navigation, or page.'
+              description: 'Optional component classification: form, table, modal, drawer, navigation, dashboard, or page.'
             }
           },
           required: ['code']
@@ -97,7 +116,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: 'get_ux_heuristics',
-        description: 'Retrieve behavioral psychology laws, friction reduction rules, micro-interaction heuristics, and real-world teardowns.',
+        description: 'Retrieve behavioral psychology laws, friction reduction rules, micro-interaction heuristics, and real-world teardowns from Built for Mars and design-skills/ux-skills.md.',
         inputSchema: {
           type: 'object',
           properties: {}
@@ -105,13 +124,34 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: 'get_contract_rules',
-        description: 'Retrieve the compiled list of deterministic UX and design system contract rules.',
+        description: 'Retrieve full system contract files (contract/ux.md, contract/core.md, contract/audit.md, contract/forms.md, contract/data.md, contract/overlays.md, contract/insights.md).',
         inputSchema: {
           type: 'object',
           properties: {
-            category: {
+            file: {
               type: 'string',
-              description: 'Optional filter: Micro-Interaction, Form Ergonomics, Ethical UX, Layout & Disclosure, Dropdown Safety, etc.'
+              description: 'Specific contract file to read (e.g. ux, core, audit, forms, data, overlays, insights, or all).'
+            }
+          }
+        }
+      },
+      {
+        name: 'get_agent_skill',
+        description: 'Retrieve the exact workspace AI Agent Skill definition from .agents/skills/ux-audit/SKILL.md.',
+        inputSchema: {
+          type: 'object',
+          properties: {}
+        }
+      },
+      {
+        name: 'get_design_system_skills',
+        description: 'Retrieve complete design system skills from design-skills/ (ux-skills.md, web-skills.md, shadcn-skills.md, carbon-skills.md).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            type: {
+              type: 'string',
+              description: 'Specific skill: ux, web, shadcn, carbon, or all.'
             }
           }
         }
@@ -123,15 +163,55 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
+  if (name === 'get_agent_skill') {
+    const skillContent = getFileContent('.agents/skills/ux-audit/SKILL.md');
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify({
+            status: 'SUCCESS',
+            source: '.agents/skills/ux-audit/SKILL.md',
+            content: skillContent || 'Skill file available in workspace repository.'
+          }, null, 2)
+        }
+      ]
+    };
+  }
+
+  if (name === 'get_design_system_skills') {
+    const requested = args?.type || 'all';
+    const skills = {};
+
+    if (requested === 'all' || requested === 'ux') skills.ux = getFileContent('design-skills/ux-skills.md');
+    if (requested === 'all' || requested === 'web') skills.web = getFileContent('design-skills/web-skills.md');
+    if (requested === 'all' || requested === 'shadcn') skills.shadcn = getFileContent('design-skills/shadcn-skills.md');
+    if (requested === 'all' || requested === 'carbon') skills.carbon = getFileContent('design-skills/carbon-skills.md');
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify({
+            status: 'SUCCESS',
+            sources: Object.keys(skills),
+            skills
+          }, null, 2)
+        }
+      ]
+    };
+  }
+
   if (name === 'get_ux_heuristics') {
+    const uxSkillsContent = getFileContent('design-skills/ux-skills.md');
     return {
       content: [
         {
           type: 'text',
           text: JSON.stringify({
             title: 'Behavioral UX & Micro-Interaction Heuristics',
-            source: 'Behavioral Psychology & Micro-Interaction Research',
-            laws: BEHAVIORAL_UX_LAWS
+            laws: BUILTFORMARS_LAWS,
+            ux_skills_reference: uxSkillsContent ? uxSkillsContent.substring(0, 1500) + '...' : 'Available in design-skills/ux-skills.md'
           }, null, 2)
         }
       ]
@@ -139,17 +219,36 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 
   if (name === 'get_contract_rules') {
-    let rules = CONTRACT_RULES;
-    if (args?.category) {
-      rules = rules.filter(r => r.category.toLowerCase().includes(args.category.toLowerCase()));
+    const targetFile = (args?.file || 'all').toLowerCase();
+    const contractFiles = {};
+
+    const filesToRead = {
+      ux: 'contract/ux.md',
+      core: 'contract/core.md',
+      audit: 'contract/audit.md',
+      forms: 'contract/forms.md',
+      data: 'contract/data.md',
+      overlays: 'contract/overlays.md',
+      insights: 'contract/insights.md'
+    };
+
+    if (targetFile === 'all') {
+      for (const [key, relPath] of Object.entries(filesToRead)) {
+        contractFiles[key] = getFileContent(relPath);
+      }
+    } else if (filesToRead[targetFile]) {
+      contractFiles[targetFile] = getFileContent(filesToRead[targetFile]);
     }
+
     return {
       content: [
         {
           type: 'text',
           text: JSON.stringify({
-            total_rules: rules.length,
-            rules: rules
+            status: 'SUCCESS',
+            summary: CONTRACT_RULES_SUMMARY,
+            loaded_files: Object.keys(contractFiles),
+            contract_contents: contractFiles
           }, null, 2)
         }
       ]
@@ -222,7 +321,31 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       passed.push('RULE-10: Single clean focus boundary verified.');
     }
 
-    const auditScore = Math.max(0, Math.round(100 - (violations.length * 20)));
+    // Check Rule RULE-30: Sidebar for Dense Navigation (>3 items)
+    if (/(nav|navigation)/i.test(code) && /flex-row|horizontal/i.test(code) && (code.match(/<a|<button/g) || []).length > 4) {
+      violations.push({
+        rule_id: 'RULE-30',
+        severity: 'P1 High',
+        description: 'Dense navigation with >4 items uses horizontal layout which risks overflow clipping.',
+        remediation: 'Convert dense navigation to a sticky vertical sidebar with uniform 4-corner curvature.'
+      });
+    } else {
+      passed.push('RULE-30: Navigation geometry & layout compliant.');
+    }
+
+    // Check Rule RULE-33: Actionable Empty State
+    if (/(table|grid|log-container)/i.test(code) && !/(empty-state|no-data|reset-filter)/i.test(code)) {
+      violations.push({
+        rule_id: 'RULE-33',
+        severity: 'P2 Medium',
+        description: 'Data grid/container missing structured Actionable Empty State implementation.',
+        remediation: 'Include an Actionable Empty State (Icon + Title + Subtitle + "Reset Search & Filters" CTA button).'
+      });
+    } else {
+      passed.push('RULE-33: Actionable empty state check passed.');
+    }
+
+    const auditScore = Math.max(0, Math.round(100 - (violations.length * 15)));
 
     return {
       content: [

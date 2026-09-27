@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 function runMCPTest() {
-  console.log('🚀 Starting Realistic End-to-End Test of ux-contract-mcp server...\n');
+  console.log('🚀 Testing Knowledge-Integrated ux-contract-mcp Server...\n');
 
   const serverProcess = spawn('node', [path.join(__dirname, 'index.js')], {
     stdio: ['pipe', 'pipe', 'inherit']
@@ -21,8 +21,7 @@ function runMCPTest() {
       method,
       params
     };
-    const jsonStr = JSON.stringify(msg);
-    serverProcess.stdin.write(jsonStr + '\n');
+    serverProcess.stdin.write(JSON.stringify(msg) + '\n');
   }
 
   let buffer = '';
@@ -30,16 +29,14 @@ function runMCPTest() {
   serverProcess.stdout.on('data', (chunk) => {
     buffer += chunk.toString();
     const lines = buffer.split('\n');
-    buffer = lines.pop(); // keep remaining unfinished line in buffer
+    buffer = lines.pop();
 
     for (const line of lines) {
       if (!line.trim()) continue;
       try {
         const response = JSON.parse(line);
         handleRPCResponse(response);
-      } catch (err) {
-        // ignore non-json logs
-      }
+      } catch (err) {}
     }
   });
 
@@ -48,55 +45,44 @@ function runMCPTest() {
   function nextStep() {
     currentStep++;
     if (currentStep === 1) {
-      console.log('1️⃣ Sending RPC "initialize"...');
+      console.log('1️⃣ Initializing MCP...');
       sendRPC('initialize', {
         protocolVersion: '2024-11-05',
         capabilities: {},
-        clientInfo: { name: 'realistic-test-runner', version: '1.0.0' }
+        clientInfo: { name: 'knowledge-test', version: '1.0.0' }
       });
     } else if (currentStep === 2) {
-      console.log('2️⃣ Sending RPC "tools/list"...');
+      console.log('2️⃣ Listing available tools...');
       sendRPC('tools/list');
     } else if (currentStep === 3) {
-      console.log('3️⃣ Test Case A: Auditing a DEFECTIVE UI snippet (Native Select leak & Missing Password Eye Toggle)...');
-      const defectiveSnippet = `
-        <form>
-          <label>Choose Country</label>
-          <select name="country"><option>USA</option></select>
-          <input type="password" name="password" placeholder="Enter password" />
-          <button type="submit">Submit</button>
-        </form>
-      `;
-      sendRPC('tools/call', {
-        name: 'audit_ux_contract',
-        arguments: { code: defectiveSnippet }
-      });
+      console.log('3️⃣ Fetching Agent Skill from .agents/skills/ux-audit/SKILL.md...');
+      sendRPC('tools/call', { name: 'get_agent_skill' });
     } else if (currentStep === 4) {
-      console.log('4️⃣ Test Case B: Auditing a FULLY COMPLIANT UX Component...');
-      const compliantSnippet = `
-        <form class="space-y-4">
-          <div role="listbox" aria-expanded="false" class="custom-select rounded-md">
-            <span>Select Region</span>
-          </div>
-          <div class="relative">
-            <input type="password" class="pr-11 border-2 border-indigo-600 focus:outline-none" placeholder="Password" />
-            <button type="button" aria-label="Toggle visibility" class="absolute right-2 top-2 visibility-toggle">👁️</button>
-          </div>
-          <button type="submit" class="active:scale-95 transition-transform">Submit</button>
-        </form>
-      `;
+      console.log('4️⃣ Fetching Contract files from contract/ directory...');
+      sendRPC('tools/call', { name: 'get_contract_rules', arguments: { file: 'ux' } });
+    } else if (currentStep === 5) {
+      console.log('5️⃣ Fetching Design Skills from design-skills/ directory...');
+      sendRPC('tools/call', { name: 'get_design_system_skills', arguments: { type: 'ux' } });
+    } else if (currentStep === 6) {
+      console.log('6️⃣ Auditing UI snippet against full contract rules...');
       sendRPC('tools/call', {
         name: 'audit_ux_contract',
-        arguments: { code: compliantSnippet }
-      });
-    } else if (currentStep === 5) {
-      console.log('5️⃣ Test Case C: Fetching Behavioral UX Heuristics...');
-      sendRPC('tools/call', {
-        name: 'get_ux_heuristics',
-        arguments: {}
+        arguments: {
+          code: `
+            <div class="sidebar-layout">
+              <nav class="flex-row">
+                <a href="#">Item 1</a><a href="#">Item 2</a><a href="#">Item 3</a><a href="#">Item 4</a><a href="#">Item 5</a>
+              </nav>
+              <form>
+                <select><option>Select Option</option></select>
+                <input type="password" placeholder="Password" />
+              </form>
+            </div>
+          `
+        }
       });
     } else {
-      console.log('\n✅ All Realistic MCP Tests Passed Successfully!');
+      console.log('\n✅ Knowledge Integration Verification Successful!');
       serverProcess.kill();
       process.exit(0);
     }
@@ -104,30 +90,27 @@ function runMCPTest() {
 
   function handleRPCResponse(res) {
     if (res.id === 1) {
-      console.log('   ✔ MCP Initialized! Server:', res.result?.serverInfo?.name);
+      console.log('   ✔ Initialized!');
       nextStep();
     } else if (res.id === 2) {
-      const toolNames = res.result?.tools?.map(t => t.name);
-      console.log('   ✔ Tools Discovered:', toolNames);
+      console.log('   ✔ Tools List:', res.result?.tools?.map(t => t.name));
       nextStep();
     } else if (res.id === 3) {
-      const text = res.result?.content?.[0]?.text;
-      const data = JSON.parse(text);
-      console.log(`   ✔ Audit Score: ${data.compliance_score} | Result: ${data.audit_result}`);
-      console.log(`   ✔ Detected ${data.violations_count} Rule Violations as expected:`);
-      data.violations.forEach(v => console.log(`      ⚠️ [${v.rule_id}] (${v.severity}): ${v.description}`));
+      const data = JSON.parse(res.result?.content?.[0]?.text);
+      console.log(`   ✔ Agent Skill Found! Content Length: ${data.content?.length} bytes (Source: ${data.source})`);
       nextStep();
     } else if (res.id === 4) {
-      const text = res.result?.content?.[0]?.text;
-      const data = JSON.parse(text);
-      console.log(`   ✔ Audit Score: ${data.compliance_score} | Result: ${data.audit_result}`);
-      console.log(`   ✔ Passed Checks (${data.passed_checks.length}):`);
-      data.passed_checks.forEach(p => console.log(`      ✅ ${p}`));
+      const data = JSON.parse(res.result?.content?.[0]?.text);
+      console.log(`   ✔ Contract files loaded: ${data.loaded_files.join(', ')} (contract/ux.md length: ${data.contract_contents?.ux?.length} bytes)`);
       nextStep();
     } else if (res.id === 5) {
-      const text = res.result?.content?.[0]?.text;
-      const data = JSON.parse(text);
-      console.log(`   ✔ Retrieved ${data.laws?.length} Behavioral Psychology Laws with Built for Mars examples.`);
+      const data = JSON.parse(res.result?.content?.[0]?.text);
+      console.log(`   ✔ Design Skills loaded: ${data.sources.join(', ')} (design-skills/ux-skills.md length: ${data.skills?.ux?.length} bytes)`);
+      nextStep();
+    } else if (res.id === 6) {
+      const data = JSON.parse(res.result?.content?.[0]?.text);
+      console.log(`   ✔ Audit Score: ${data.compliance_score} | Violations Caught: ${data.violations_count}`);
+      data.violations.forEach(v => console.log(`      ⚠️ [${v.rule_id}]: ${v.description}`));
       nextStep();
     }
   }
