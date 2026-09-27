@@ -1,0 +1,1 @@
+now you should extract from something essentials all create new skills md and add on "contract" for UX use firecrawl or builtformars mcp do your best as you are principle level Product designer and engineer ok utlize mcp before execute make plan

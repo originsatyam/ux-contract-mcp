@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether Cloud Console | Master Enterprise Operations Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. DESIGN SYSTEM DESIGN TOKENS (Contract Core / Rules 1-31)
+       ========================================================================== */
+    :root {
+      /* Brand & Primary */
+      --color-primary-50: #EEF2FF;
+      --color-primary-100: #E0E7FF;
+      --color-primary-500: #6366F1;
+      --color-primary-600: #4F46E5;
+      --color-primary-700: #4338CA;
+      --color-primary-800: #3730A3;
+
+      /* Semantic Feedback */
+      --color-success-50: #ECFDF5;
+      --color-success-100: #D1FAE5;
+      --color-success-600: #059669;
+      --color-success-700: #047857;
+
+      --color-danger-50: #FEF2F2;
+      --color-danger-100: #FEE2E2;
+      --color-danger-600: #DC2626;
+      --color-danger-700: #B91C1C;
+
+      --color-warning-50: #FFFBEB;
+      --color-warning-100: #FEF3C7;
+      --color-warning-600: #D97706;
+      --color-warning-700: #B45309;
+
+      /* Neutral Surfaces & Boundaries */
+      --color-neutral-0: #FFFFFF;
+      --color-neutral-50: #F8FAFC;
+      --color-neutral-100: #F1F5F9;
+      --color-neutral-200: #E2E8F0;
+      --color-neutral-300: #D1D5DB;
+      --color-neutral-400: #9CA3AF;
+      --color-neutral-500: #64748B;
+      --color-neutral-600: #475569;
+      --color-neutral-700: #334155;
+      --color-neutral-800: #1E293B;
+      --color-neutral-900: #0F172A;
+
+      /* Radii Continuity */
+      --radius-xs: 3px;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --radius-xl: 12px;
+      --radius-pill: 9999px;
+
+      /* Typography */
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Transitions */
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Shadows */
+      --shadow-xs: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+      --shadow-sm: 0 1px 3px 0 rgba(16, 24, 40, 0.08), 0 1px 2px -1px rgba(16, 24, 40, 0.08);
+      --shadow-md: 0 4px 6px -1px rgba(16, 24, 40, 0.08), 0 2px 4px -2px rgba(16, 24, 40, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(16, 24, 40, 0.1), 0 4px 6px -4px rgba(16, 24, 40, 0.06);
+      --shadow-tooltip: 0 4px 12px rgba(15, 23, 42, 0.15);
+
+      /* Sidebar Dimensions */
+      --sidebar-width-expanded: 260px;
+      --sidebar-width-collapsed: 68px;
+      --header-height: 64px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--color-neutral-900);
+      background-color: var(--color-neutral-50);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* WCAG Skip Link */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 16px;
+      background: var(--color-primary-600);
+      color: #FFFFFF;
+      padding: 8px 16px;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      z-index: 9999;
+      text-decoration: none;
+      transition: top var(--transition-fast);
+    }
+    .skip-link:focus {
+      top: 12px;
+    }
+
+    /* ==========================================================================
+       2. TOP APPLICATION HEADER
+       ========================================================================== */
+    .app-header {
+      height: var(--header-height);
+      background-color: var(--color-neutral-0);
+      border-bottom: 1px solid var(--color-neutral-200);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-inner {
+      width: 100%;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .sidebar-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--color-neutral-200);
+      border-radius: var(--radius-md);
+      background: var(--color-neutral-0);
+      color: var(--color-neutral-600);
+      cursor: pointer;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+    .sidebar-toggle-btn:hover {
+      background-color: var(--color-neutral-100);
+      border-color: var(--color-neutral-300);
+      color: var(--color-neutral-900);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--color-neutral-900);
+      text-decoration: none;
+    }
+
+    .brand-icon-box {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25);
+    }
+
+    .badge-env {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      background-color: var(--color-success-50);
+      color: var(--color-success-700);
+      border: 1px solid var(--color-success-100);
+      border-radius: var(--radius-pill);
+    }
+
+    .status-pulse {
+      width: 6px;
+      height: 6px;
+      background-color: var(--color-success-600);
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .btn-subtle {
+      background-color: var(--color-neutral-0);
+      color: var(--color-neutral-700);
+      border-color: var(--color-neutral-200);
+      box-shadow: var(--shadow-xs);
+    }
+    .btn-subtle:hover:not(:disabled) {
+      background-color: var(--color-neutral-50);
+      border-color: var(--color-neutral-300);
+      color: var(--color-neutral-900);
+    }
+
+    .btn-primary {
+      background-color: var(--color-primary-600);
+      color: #FFFFFF;
+      box-shadow: var(--shadow-xs);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--color-primary-700);
+    }
+
+    /* ==========================================================================
+       3. ENTERPRISE SIDEBAR NAVIGATION SYSTEM (Rule 30 & Rule 31)
+       ========================================================================== */
+    .app-body {
+      display: flex;
+      flex: 1;
+      min-height: calc(100vh - var(--header-height));
+      position: relative;
+    }
+
+    .app-sidebar {
+      width: var(--sidebar-width-expanded);
+      min-width: var(--sidebar-width-expanded);
+      background-color: var(--color-neutral-0);
+      border-right: 1px solid var(--color-neutral-200);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: var(--header-height);
+      height: calc(100vh - var(--header-height));
+      transition: width var(--transition-base), min-width var(--transition-base);
+      z-index: 30;
+      user-select: none;
+    }
+    .app-sidebar.collapsed {
+      width: var(--sidebar-width-collapsed);
+      min-width: var(--sidebar-width-collapsed);
+    }
+
+    .sidebar-scroll-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 16px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--color-neutral-400);
+      padding: 0 10px 6px;
+      white-space: nowrap;
+      transition: opacity var(--transition-fast);
+    }
+    .app-sidebar.collapsed .sidebar-section-title {
+      opacity: 0;
+      display: none;
+    }
+
+    .sidebar-nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Navigation Tab Button - Uniform 4-Corner Curvature (Rule 31) */
+    .nav-tab-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--color-neutral-600);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-md); /* Flawless uniform 4-corner curvature */
+      cursor: pointer;
+      text-align: left;
+      white-space: nowrap;
+      transition: color var(--transition-fast), background-color var(--transition-fast);
+      outline: none;
+    }
+    .nav-tab-btn:hover:not(.active) {
+      color: var(--color-neutral-900);
+      background-color: var(--color-neutral-100);
+    }
+
+    /* ACTIVE STATE DISCIPLINE - Clean Tinted Surface Pill (Zero vertical left margin lines) */
+    .nav-tab-btn.active {
+      color: var(--color-primary-700);
+      background-color: var(--color-primary-50);
+      font-weight: 600;
+      border-radius: var(--radius-md);
+    }
+    .nav-tab-btn.active .tab-icon {
+      color: var(--color-primary-600);
+    }
+    .nav-tab-btn.active:hover {
+      color: var(--color-primary-800);
+      background-color: var(--color-primary-100);
+      cursor: default;
+    }
+
+    .tab-icon {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      color: var(--color-neutral-500);
+    }
+
+    .tab-label {
+      flex: 1;
+      white-space: nowrap;
+      transition: opacity var(--transition-fast);
+    }
+    .app-sidebar.collapsed .tab-label {
+      display: none;
+    }
+
+    /* Functional Alert Counter (strictly for notifications/counts, NOT decorative category labels) */
+    .nav-counter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: var(--radius-pill);
+      background-color: var(--color-neutral-200);
+      color: var(--color-neutral-700);
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .nav-counter.badge-urgent {
+      background-color: var(--color-danger-50);
+      color: var(--color-danger-700);
+      border: 1px solid var(--color-danger-100);
+    }
+
+    /* Collapsed state badge conversion into indicator dot */
+    .app-sidebar.collapsed .nav-counter {
+      position: absolute;
+      top: 9px;
+      right: 14px;
+      min-width: 8px;
+      width: 8px;
+      height: 8px;
+      padding: 0;
+      border-radius: 50%;
+      border: 2px solid var(--color-neutral-0);
+      font-size: 0;
+      color: transparent;
+      margin: 0;
+    }
+    .app-sidebar.collapsed .nav-counter.badge-urgent {
+      background-color: var(--color-danger-600);
+    }
+
+    .rail-tooltip {
+      position: absolute;
+      left: calc(var(--sidebar-width-collapsed) + 8px);
+      top: 50%;
+      transform: translateY(-50%) scale(0.95);
+      background-color: var(--color-neutral-900);
+      color: #FFFFFF;
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: var(--shadow-tooltip);
+      opacity: 0;
+      transition: opacity var(--transition-fast), transform var(--transition-fast);
+      z-index: 100;
+    }
+    .app-sidebar.collapsed .nav-tab-btn:hover .rail-tooltip {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+    }
+    .app-sidebar:not(.collapsed) .rail-tooltip {
+      display: none;
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid var(--color-neutral-200);
+      padding: 12px;
+      background-color: var(--color-neutral-0);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--radius-md);
+      background-color: var(--color-neutral-50);
+      border: 1px solid var(--color-neutral-200);
+      overflow: hidden;
+    }
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-primary-100);
+      color: var(--color-primary-700);
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .user-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--color-neutral-800);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .app-sidebar.collapsed .user-info {
+      display: none;
+    }
+
+    .collapse-trigger-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 36px;
+      background: transparent;
+      border: 1px dashed var(--color-neutral-300);
+      border-radius: var(--radius-md);
+      color: var(--color-neutral-600);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .collapse-trigger-btn:hover {
+      background-color: var(--color-neutral-100);
+      border-color: var(--color-neutral-400);
+      color: var(--color-neutral-900);
+    }
+    .app-sidebar.collapsed .collapse-text {
+      display: none;
+    }
+
+    /* ==========================================================================
+       4. MAIN CONTENT CONTAINER & DYNAMIC CONSOLE MODULES
+       ========================================================================== */
+    .app-main {
+      flex: 1;
+      max-width: 1360px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 32px 64px;
+    }
+
+    .module-panel {
+      display: none;
+      animation: fadeIn var(--transition-base);
+    }
+    .module-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .module-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .module-title-group h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--color-neutral-900);
+      letter-spacing: -0.02em;
+    }
+    .module-title-group p {
+      font-size: 13.5px;
+      color: var(--color-neutral-500);
+      margin-top: 4px;
+    }
+
+    /* Card Foundation */
+    .card {
+      background-color: var(--color-neutral-0);
+      border: 1px solid var(--color-neutral-200);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--color-neutral-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background-color: var(--color-neutral-0);
+    }
+    .card-title { font-size: 15px; font-weight: 600; color: var(--color-neutral-900); }
+    .card-subtitle { font-size: 12.5px; color: var(--color-neutral-500); margin-top: 2px; }
+    .card-body { padding: 24px; }
+
+    /* Tables & Badges */
+    .table-container { width: 100%; overflow-x: auto; }
+    .enterprise-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+    .enterprise-table th { padding: 12px 16px; background-color: var(--color-neutral-50); color: var(--color-neutral-600); font-weight: 600; border-bottom: 1px solid var(--color-neutral-200); white-space: nowrap; }
+    .enterprise-table td { padding: 14px 16px; border-bottom: 1px solid var(--color-neutral-100); color: var(--color-neutral-800); white-space: nowrap; }
+    .enterprise-table tbody tr:hover { background-color: var(--color-neutral-50); }
+
+    .col-numeric { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--font-mono); font-weight: 500; }
+    .col-action { text-align: left; width: 120px; }
+
+    .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; font-size: 11.5px; font-weight: 500; border-radius: var(--radius-pill); }
+    .badge-success { background-color: var(--color-success-50); color: var(--color-success-700); border: 1px solid var(--color-success-100); }
+    .badge-warning { background-color: var(--color-warning-50); color: var(--color-warning-700); border: 1px solid var(--color-warning-100); }
+    .badge-danger { background-color: var(--color-danger-50); color: var(--color-danger-700); border: 1px solid var(--color-danger-100); }
+
+    .matrix-toggle { width: 18px; height: 18px; accent-color: var(--color-primary-600); cursor: pointer; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 6px; }
+    .form-input {
+      width: 100%; height: 38px; padding: 0 12px; font-family: var(--font-sans); font-size: 13.5px;
+      border: 1px solid var(--color-neutral-300); border-radius: var(--radius-md); outline: none;
+    }
+
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast-item { pointer-events: auto; min-width: 320px; background-color: var(--color-neutral-900); color: #FFFFFF; padding: 12px 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <a href="#mainContent" class="skip-link">Skip to main application</a>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <button type="button" class="sidebar-toggle-btn" id="btnToggleSidebarHeader" title="Toggle Sidebar (Ctrl+B)" onclick="toggleSidebarRail()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <a href="#" class="brand-logo">
+          <div class="brand-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span>Aether Cloud Console</span>
+        </a>
+
+        <div class="badge-env">
+          <span class="status-pulse"></span>
+          <span>us-east-1 (prod)</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-subtle" onclick="handleTelemetrySync(this)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span>Sync Telemetry</span>
+        </button>
+        <button type="button" class="btn btn-primary" onclick="triggerToast('Enterprise Operations System Connected')">
+          <span>Console Ops</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BODY WRAPPER -->
+  <div class="app-body">
+
+    <!-- ENTERPRISE SIDEBAR (Rule 30 & Rule 31) -->
+    <aside class="app-sidebar" id="appSidebar" aria-label="Main Navigation">
+      <div class="sidebar-scroll-container">
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Core Platform</div>
+          <div class="sidebar-nav-group">
+            <button type="button" class="nav-tab-btn active" id="tabWizard" onclick="selectNavTab('wizard')">
+              <span class="tab-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                  <polyline points="2 17 12 22 22 17"></polyline>
+                  <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+              </span>
+              <span class="tab-label">Cluster Provisioning</span>
+              <span class="rail-tooltip">Cluster Provisioning</span>
+            </button>
+
+            <button type="button" class="nav-tab-btn" id="tabBatch" onclick="selectNavTab('batch')">
+              <span class="tab-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </span>
+              <span class="tab-label">Batch Ingestion</span>
+              <span class="nav-counter badge-urgent" id="sidebarBatchBadge">1</span>
+              <span class="rail-tooltip">Batch Ingestion (1 alert)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Governance & Security</div>
+          <div class="sidebar-nav-group">
+            <button type="button" class="nav-tab-btn" id="tabGrid" onclick="selectNavTab('grid')">
+              <span class="tab-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="3" y1="9" x2="21" y2="9"></line>
+                  <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+              </span>
+              <span class="tab-label">Audit Ledger & Events</span>
+              <span class="rail-tooltip">Audit Ledger & Events</span>
+            </button>
+
+            <button type="button" class="nav-tab-btn" id="tabRbac" onclick="selectNavTab('rbac')">
+              <span class="tab-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+              <span class="tab-label">Permissions Matrix</span>
+              <span class="rail-tooltip">Permissions Matrix</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Treasury & Settlements</div>
+          <div class="sidebar-nav-group">
+            <button type="button" class="nav-tab-btn" id="tabPay" onclick="selectNavTab('pay')">
+              <span class="tab-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                  <line x1="1" y1="10" x2="23" y2="10"></line>
+                </svg>
+              </span>
+              <span class="tab-label">Settlement Gateway</span>
+              <span class="rail-tooltip">Settlement Gateway</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-badge">
+          <div class="user-avatar">SA</div>
+          <div class="user-info">
+            <div class="user-name">SecAdmin Aether</div>
+            <div class="user-role">Super Admin &bull; Tier 4</div>
+          </div>
+        </div>
+
+        <button type="button" class="collapse-trigger-btn" onclick="toggleSidebarRail()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="collapseChevronIcon">
+            <polyline points="11 17 6 12 11 7"></polyline>
+            <polyline points="18 17 13 12 18 7"></polyline>
+          </svg>
+          <span class="collapse-text">Collapse (Ctrl+B)</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="app-main" id="mainContent">
+
+      <!-- MODULE 1: CLUSTER PROVISIONING -->
+      <section class="module-panel active" id="panelWizard">
+        <div class="module-banner">
+          <div class="module-title-group">
+            <h1>Module 1: Multi-Step Cluster Orchestration</h1>
+            <p>Step-by-step zero-error validation with interactive state tracking.</p>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="triggerToast('Provisioning sequence initiated')">Deploy Cluster</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Cluster Parameters & Secrets</div>
+              <div class="card-subtitle">Zero-reflow form controls with credential toggle</div>
+            </div>
+            <span class="status-badge badge-success">Ready for Execution</span>
+          </div>
+          <div class="card-body">
+            <div class="form-group" style="max-width: 480px;">
+              <label class="form-label" for="clusterNameInput">Cluster Identifier</label>
+              <input type="text" id="clusterNameInput" class="form-input" value="aether-primary-us-east" placeholder="e.g. prod-core-01">
+            </div>
+            <div class="form-group" style="max-width: 480px;">
+              <label class="form-label" for="clusterSecretKey">Secret HSM Deployment Key</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="password" id="clusterSecretKey" class="form-input" value="hsm_sec_9921_x89a421b" style="font-family: var(--font-mono);">
+                <button type="button" class="btn btn-subtle" onclick="toggleSecretVisibility()">Reveal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODULE 2: BATCH INGESTION -->
+      <section class="module-panel" id="panelBatch">
+        <div class="module-banner">
+          <div class="module-title-group">
+            <h1>Module 2: Resilient Batch File Ingestion</h1>
+            <p>Individual file remediation with conflict resolution and blocker removal.</p>
+          </div>
+          <button type="button" class="btn btn-subtle" onclick="resolveAllBatchIssues()">Resolve All Conflicts</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Active Ingestion Queue (4 Files)</div>
+              <div class="card-subtitle">1 file requires resolution before batch commit</div>
+            </div>
+            <span class="status-badge badge-warning" id="batchQueueStatus">1 Conflict Pending</span>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <table class="enterprise-table">
+              <thead>
+                <tr>
+                  <th>File Name</th>
+                  <th>Payload Size</th>
+                  <th>Status</th>
+                  <th class="col-action">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>orders_2026_q3.parquet</strong></td>
+                  <td class="col-numeric">48.2 MB</td>
+                  <td><span class="status-badge badge-success">Validated</span></td>
+                  <td class="col-action"><button type="button" class="btn btn-subtle" style="padding: 4px 8px; font-size: 12px;">Inspect</button></td>
+                </tr>
+                <tr id="conflictRow" style="background-color: var(--color-warning-50);">
+                  <td><strong>settlement_ledger_dup.csv</strong></td>
+                  <td class="col-numeric">12.8 MB</td>
+                  <td><span class="status-badge badge-danger" id="conflictBadge">Collision Detected</span></td>
+                  <td class="col-action">
+                    <button type="button" class="btn btn-subtle" id="btnResolveConflict" style="padding: 4px 8px; font-size: 12px; color: var(--color-danger-700);" onclick="resolveConflictFile()">
+                      Overwrite & Fix
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>telemetry_logs_stream.json</strong></td>
+                  <td class="col-numeric">3.1 MB</td>
+                  <td><span class="status-badge badge-success">Validated</span></td>
+                  <td class="col-action"><button type="button" class="btn btn-subtle" style="padding: 4px 8px; font-size: 12px;">Inspect</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODULE 3: AUDIT LEDGER -->
+      <section class="module-panel" id="panelGrid">
+        <div class="module-banner">
+          <div class="module-title-group">
+            <h1>Module 3: Audit Ledger & Security Events</h1>
+            <p>Real-time enterprise events grid with strictly tabular numbers and left-aligned actions.</p>
+          </div>
+          <button type="button" class="btn btn-subtle" onclick="triggerToast('Audit event stream refreshed')">Refresh Feed</button>
+        </div>
+
+        <!-- Metric Emphasis Summary Cards (Rule 32 & Rule 33 / Metric Scale) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
+          <div class="card" style="padding: 16px 20px; margin-bottom: 0;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.05em;">Total Settlement Value</div>
+            <div style="font-size: 28px; line-height: 32px; font-weight: 700; font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-neutral-900); margin-top: 6px;">$4,190.50</div>
+            <div style="font-size: 12px; color: var(--color-success-700); margin-top: 4px; font-weight: 500;">&#8593; 12.4% vs last hour</div>
+          </div>
+          <div class="card" style="padding: 16px 20px; margin-bottom: 0;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.05em;">Active Continuous Loggers</div>
+            <div style="font-size: 28px; line-height: 32px; font-weight: 700; font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-neutral-900); margin-top: 6px;">14 / 14</div>
+            <div style="font-size: 12px; color: var(--color-neutral-500); margin-top: 4px; font-weight: 500;">100% telemetry coverage</div>
+          </div>
+          <div class="card" style="padding: 16px 20px; margin-bottom: 0;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.05em;">Flagged Anomalies</div>
+            <div style="font-size: 28px; line-height: 32px; font-weight: 700; font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-success-700); margin-top: 6px;">0</div>
+            <div style="font-size: 12px; color: var(--color-success-700); margin-top: 4px; font-weight: 500;">Shield status healthy</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Immutable Event Log</div>
+              <div class="card-subtitle">SOC2 Type II compliant continuous logging</div>
+            </div>
+            <span class="status-badge badge-success">Streaming Active</span>
+          </div>
+          <div class="table-container">
+            <table class="enterprise-table">
+              <thead>
+                <tr>
+                  <th class="col-action">Action</th>
+                  <th>Event ID</th>
+                  <th>Actor / Service</th>
+                  <th>Operation</th>
+                  <th class="col-numeric">Settlement (USD)</th>
+                  <th>Timestamp (UTC)</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="col-action"><button type="button" class="btn btn-subtle" style="padding: 4px 8px; font-size: 12px;">Inspect</button></td>
+                  <td><code>evt_tr_99180</code></td>
+                  <td>sec-admin@aether.io</td>
+                  <td>CLUSTER_DEPLOY</td>
+                  <td class="col-numeric">$1,420.00</td>
+                  <td>2026-09-27 12:20:10</td>
+                  <td><span class="status-badge badge-success">Settled</span></td>
+                </tr>
+                <tr>
+                  <td class="col-action"><button type="button" class="btn btn-subtle" style="padding: 4px 8px; font-size: 12px;">Inspect</button></td>
+                  <td><code>evt_tr_99179</code></td>
+                  <td>billing-vault-daemon</td>
+                  <td>STRIPE_SYNC</td>
+                  <td class="col-numeric">$320.50</td>
+                  <td>2026-09-27 12:18:04</td>
+                  <td><span class="status-badge badge-success">Settled</span></td>
+                </tr>
+                <tr>
+                  <td class="col-action"><button type="button" class="btn btn-subtle" style="padding: 4px 8px; font-size: 12px;">Inspect</button></td>
+                  <td><code>evt_tr_99178</code></td>
+                  <td>security-hsm-signer</td>
+                  <td>HSM_ROTATE</td>
+                  <td class="col-numeric">$2,450.00</td>
+                  <td>2026-09-27 12:15:42</td>
+                  <td><span class="status-badge badge-success">Settled</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODULE 4: RBAC MATRIX -->
+      <section class="module-panel" id="panelRbac">
+        <div class="module-banner">
+          <div class="module-title-group">
+            <h1>Module 4: Enterprise RBAC Permissions Matrix</h1>
+            <p>Tri-state permission propagation with parent-child inheritance.</p>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="triggerToast('Access policies committed')">Save Permissions</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Role Entitlement Hierarchy</div>
+              <div class="card-subtitle">Scoped by infrastructure clusters and financial vaults</div>
+            </div>
+            <span class="status-badge badge-success">In Sync</span>
+          </div>
+          <div class="table-container">
+            <table class="enterprise-table">
+              <thead>
+                <tr>
+                  <th>Scope</th>
+                  <th style="text-align: center;">Super Admin</th>
+                  <th style="text-align: center;">DevOps Lead</th>
+                  <th style="text-align: center;">Auditor</th>
+                  <th style="text-align: center;">Billing Operator</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Infrastructure: Cluster Read</strong></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle" checked disabled></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle" checked></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle" checked></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle"></td>
+                </tr>
+                <tr>
+                  <td><strong>Infrastructure: Cluster Deploy</strong></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle" checked disabled></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle" checked></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle"></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle"></td>
+                </tr>
+                <tr>
+                  <td><strong>Treasury: Settlement Execution</strong></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle" checked disabled></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle"></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle"></td>
+                  <td style="text-align: center;"><input type="checkbox" class="matrix-toggle" checked></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODULE 5: SPLIT SETTLEMENT -->
+      <section class="module-panel" id="panelPay">
+        <div class="module-banner">
+          <div class="module-title-group">
+            <h1>Module 5: Split Settlement Gateway</h1>
+            <p>Multi-currency precision allocation with zero-sum ledger invariance.</p>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="triggerToast('Settlement split executed')">Commit Split</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Allocation Distribution</div>
+              <div class="card-subtitle">Total allocation must strictly equal 100.00%</div>
+            </div>
+            <span class="status-badge badge-success">Balanced (100.00%)</span>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+              <div class="form-group">
+                <label class="form-label" for="splitA">Primary Vault (USD)</label>
+                <input type="text" id="splitA" class="form-input col-numeric" value="65.00%">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="splitB">Secondary Staking (EUR)</label>
+                <input type="text" id="splitB" class="form-input col-numeric" value="25.00%">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="splitC">Reserve Liquidity (GBP)</label>
+                <input type="text" id="splitC" class="form-input col-numeric" value="10.00%">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    function selectNavTab(tabId) {
+      document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.module-panel').forEach(panel => panel.classList.remove('active'));
+
+      if (tabId === 'wizard') {
+        document.getElementById('tabWizard').classList.add('active');
+        document.getElementById('panelWizard').classList.add('active');
+      } else if (tabId === 'batch') {
+        document.getElementById('tabBatch').classList.add('active');
+        document.getElementById('panelBatch').classList.add('active');
+      } else if (tabId === 'grid') {
+        document.getElementById('tabGrid').classList.add('active');
+        document.getElementById('panelGrid').classList.add('active');
+      } else if (tabId === 'rbac') {
+        document.getElementById('tabRbac').classList.add('active');
+        document.getElementById('panelRbac').classList.add('active');
+      } else if (tabId === 'pay') {
+        document.getElementById('tabPay').classList.add('active');
+        document.getElementById('panelPay').classList.add('active');
+      }
+    }
+
+    function toggleSidebarRail() {
+      const sidebar = document.getElementById('appSidebar');
+      sidebar.classList.toggle('collapsed');
+      const isCollapsed = sidebar.classList.contains('collapsed');
+      const chevron = document.getElementById('collapseChevronIcon');
+      if (isCollapsed) {
+        chevron.innerHTML = '<polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline>';
+      } else {
+        chevron.innerHTML = '<polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline>';
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        toggleSidebarRail();
+      }
+    });
+
+    function handleTelemetrySync(btn) {
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span>Syncing...</span>';
+      btn.style.opacity = '0.7';
+
+      setTimeout(() => {
+        btn.innerHTML = '<span>Synced &#10003;</span>';
+        btn.style.opacity = '1';
+        btn.style.backgroundColor = 'var(--color-success-50)';
+        btn.style.color = 'var(--color-success-700)';
+
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.backgroundColor = '';
+          btn.style.color = '';
+        }, 1500);
+      }, 600);
+    }
+
+    function toggleSecretVisibility() {
+      const input = document.getElementById('clusterSecretKey');
+      if (input.type === 'password') {
+        input.type = 'text';
+      } else {
+        input.type = 'password';
+      }
+    }
+
+    function resolveConflictFile() {
+      const row = document.getElementById('conflictRow');
+      row.style.backgroundColor = '';
+      document.getElementById('conflictBadge').className = 'status-badge badge-success';
+      document.getElementById('conflictBadge').textContent = 'Resolved (Overwritten)';
+
+      const btn = document.getElementById('btnResolveConflict');
+      btn.textContent = 'Remediated';
+      btn.disabled = true;
+
+      const sidebarBadge = document.getElementById('sidebarBatchBadge');
+      if (sidebarBadge) {
+        sidebarBadge.style.display = 'none';
+      }
+
+      document.getElementById('batchQueueStatus').className = 'status-badge badge-success';
+      document.getElementById('batchQueueStatus').textContent = 'All Validated (Ready)';
+
+      triggerToast('Conflict resolved: settlement_ledger_dup.csv overwritten');
+    }
+
+    function resolveAllBatchIssues() {
+      resolveConflictFile();
+    }
+
+    function triggerToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast-item';
+      toast.innerHTML = `
+        <span>${message}</span>
+        <button type="button" style="background:none;border:none;color:#94A3B8;cursor:pointer;font-size:16px;" onclick="this.parentElement.remove()">&times;</button>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        if (toast.parentElement) toast.remove();
+      }, 3500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+make sure when you will give me prompt give me only that prompt which i need to put here no more any extra text
+
+feedback-patterns.md
+
+go
+
+Step 4: layout-patterns.md (page structure, containers, grid, responsive)
+Step 5: card-patterns.md (card logic, spacing, states)
+Step 6: navigation-patterns.md (header, sidebar, tabs behavior)
+Step 7: data-display-patterns.md (table, list, badge, tag patterns)
